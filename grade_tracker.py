@@ -1,3 +1,11 @@
+import sys
+
+# Read command-line argument if provided
+if len(sys.argv) > 1:
+    mode = sys.argv[1]
+else:
+    mode = 'all'
+
 # Collect student data
 names = []
 scores = []
@@ -11,7 +19,7 @@ name = input("Enter student name (or done to stop): ")
 while name != 'done':
     score = int(input("Enter score for " + name + ": "))
 
-    # if statement to validate score range
+    # validate score
     if score < 0 or score > 100:
         print("Score must be between 0 and 100. Try again.")
     else:
@@ -24,12 +32,11 @@ while name != 'done':
 print("Data entry complete. " + str(len(names)) + " students entered.")
 
 # Process the data
-
 total = 0
 highest = scores[0]
 lowest = scores[0]
 
-# for loop with range() to walk through both lists by index
+# for loop with range() to walk through both lists
 for i in range(len(names)):
     total = total + scores[i]
 
@@ -41,32 +48,67 @@ for i in range(len(names)):
 
 average = total / len(names)
 
-print()
-print("=== Class Summary ===")
-print("Total students : " + str(len(names)))
-print("Class average  : " + str(round(average, 1)))
-print("Highest score  : " + str(highest))
-print("Lowest score   : " + str(lowest))
+# Summary output
+if mode == 'all' or mode == 'summary':
+    print()
+    print("=== Class Summary ===")
+    print("Total students : " + str(len(names)))
+    print("Class average  : " + str(round(average, 1)))
+    print("Highest score  : " + str(highest))
+    print("Lowest score   : " + str(lowest))
+
+# Full grade report
+if mode == 'all' or mode == 'report':
+    print()
+    print("=== Full Grade Report ===")
+    print(f"{'Name':<20} {'Score':<8} {'Grade':<6}")
+    print("-" * 36)
+
+    for i in range(len(names)):
+        score = scores[i]
+
+        if score >= 90:
+            letter = 'A'
+        elif score >= 80:
+            letter = 'B'
+        elif score >= 70:
+            letter = 'C'
+        elif score >= 60:
+            letter = 'D'
+        else:
+            letter = 'F'
+
+        print(f"{names[i]:<20} {score:<8} {letter:<6}")
 
 print()
-print("=== Full Grade Report ===")
-print(f"{'Name':<20} {'Score':<8} {'Grade':<6}")
-print("-" * 36)
+print("=== Student Search ===")
+search = input("Enter a student name to search (or quit to exit): ")
 
-# for loop directly over the names list
-for i in range(len(names)):
-    score = scores[i]
+while search != 'quit':
+    found = False
 
-    # if/elif/else to assign letter grade
-    if score >= 90:
-        letter = 'A'
-    elif score >= 80:
-        letter = 'B'
-    elif score >= 70:
-        letter = 'C'
-    elif score >= 60:
-        letter = 'D'
-    else:
-        letter = 'F'
+    # for loop over the names list
+    for i in range(len(names)):
+        if names[i].lower() == search.lower():  # case-insensitive
+            score = scores[i]
 
-    print(f"{names[i]:<20} {score:<8} {letter:<6}")
+            if score >= 90:
+                letter = 'A'
+            elif score >= 80:
+                letter = 'B'
+            elif score >= 70:
+                letter = 'C'
+            elif score >= 60:
+                letter = 'D'
+            else:
+                letter = 'F'
+
+            print(f"{names[i]} | Score: {score} | Grade: {letter}")
+            found = True
+
+    if found == False:
+        print("Student not found.")
+
+    search = input("Search again (or quit to exit): ")
+
+print("Goodbye!")
